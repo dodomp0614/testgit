@@ -14,7 +14,7 @@ pipeline {
                 """
             }
         }
-        stage('push django image to dockerhub) {
+        stage('push django image to dockerhub') {
             steps {
                 sh """
 		docker push dlgytjd1997/pipetest:latest
