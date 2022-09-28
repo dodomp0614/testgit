@@ -7,29 +7,27 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Build Django project to docker hub') {
+        stage('Build Django project with dockerfile') {
             steps {
                 sh """
-                cd /root/
-                docker build . -t dlgytjd1997
+                docker build . -t dlgytjd1997/pipetest
                 """
             }
         }
-        stage('Build Docker Image by Jib & Push to AWS ECR Repository') {
+        stage('push django image to dockerhub) {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'azure_acr_credential', passwordVariable: 'password', usernameVariable: 'username')]) {
-                            sh 'cd ${mainDir}'
-                            sh  'docker login -u ${username} -p ${password} jktest.azurecr.io'
-                            sh  './gradlew jib -Djib.to.image=jktest.azurecr.io -Djib.console='plain''                            
-                        }
+                sh """
+		docker push dlgytjd1997/pipetest:latest
+		"""
             }
         }
-        stage('Deploy to AWS EC2 VM'){
+        stage('Deploy with Azure VM'){
             steps{
                 sshagent(credentials : ["deploy-key"]) {
-                    sh "ssh -o StrictHostKeyChecking=no ubuntu@${deployHost} \
-                     'aws ecr get-login-password --region ${region} | docker login --username AWS --password-stdin ${ecrUrl}/${repository}; \
-                      docker run -d -p 80:8080 -t ${ecrUrl}/${repository}:${currentBuild.number};'"
+                    sh """
+		    ssh -o StrictHostKeyChecking=no hyosung@20.200.209.165 
+		    docker run -d -p 8000:8000 dlgytjd1997/pipetest:latest
+		    """
                 }
             }
         }
