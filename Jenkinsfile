@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        /// DockerHUB 로그인을 위한 credential
+        DOCKERHUB_CREDENTIALS=credentials(‘dockerhub’)
+
     stages {
         stage('Pull Codes from Github'){
             steps{
@@ -17,17 +21,18 @@ pipeline {
         stage('push django image to dockerhub') {
             steps {
                 sh """
-		docker push dlgytjd1997/pipetest:latest
-		"""
+                echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
+                docker push dlgytjd1997/pipetest:latest
+                """
             }
         }
         stage('Deploy with Azure VM'){
             steps{
                 sshagent(credentials : ["deploy-key"]) {
                     sh """
-		    ssh -o StrictHostKeyChecking=no hyosung@20.200.209.165 
-		    docker run -d -p 8000:8000 dlgytjd1997/pipetest:latest
-		    """
+                    ssh -o StrictHostKeyChecking=no hyosung@20.200.209.165
+                    docker run -d -p 8000:8000 dlgytjd1997/pipetest:latest
+                    """
                 }
             }
         }
