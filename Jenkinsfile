@@ -4,6 +4,7 @@ pipeline {
     environment {
         /// DockerHUB 로그인을 위한 credential
         DOCKERHUB_CREDENTIALS=credentials(‘dockerhub’)
+    }
 
     stages {
         stage('Pull Codes from Github'){
