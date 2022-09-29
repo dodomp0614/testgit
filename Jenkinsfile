@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        /// DockerHUB 로그인을 위한 credential
-        DOCKERHUB_CREDENTIALS = credentials(‘dockerhub’)
-        DOCKERHUB_REPOSITORY="dlgytjd1997"
     }
 
     stages {
