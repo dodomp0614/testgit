@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         /// DockerHUB 로그인을 위한 credential
-        DOCKERHUB_CREDENTIALS=credentials(‘dockerhub’)
+        DOCKERHUB_CREDENTIALS = credentials(‘dockerhub’)
     }
 
     stages {
