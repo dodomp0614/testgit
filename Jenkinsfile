@@ -18,10 +18,11 @@ pipeline {
         }
         stage('push django image to dockerhub') {
             steps {
-                sh """
-                echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
+                withDockerRegistry([ credentialsId: "dockerhub", url: "" ]) {
+                sh """ 
                 docker push dlgytjd1997/pipetest:latest
                 """
+                }
             }
         }
         stage('Deploy with Azure VM'){
