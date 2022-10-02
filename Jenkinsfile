@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    environment { 
+        REPOSITORY = "dlgytjd1997/pipeline"  //docker hub id와 repository 이름
+        DOCKERHUB_CREDENTIALS = credentials('docker-hub') // jenkins에 등록해 놓은 docker hub credentials 이름
+        dockerImage = ''
 
     
 
@@ -18,13 +22,17 @@ pipeline {
         }
         stage('push django image to dockerhub') {
             steps {
-                withDockerRegistry([ credentialsId: "dockerhub", url: "" ]) {
                 sh """ 
+                echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin 
                 docker push dlgytjd1997/pipetest:latest
                 """
-                }
             }
         }
+        stage('Remove docker image') { 
+		  steps { 
+              sh "docker rmi $REPOSITORY:$BUILD_NUMBER" // docker image 제거
+          }
+        } 
         stage('Deploy with Azure VM'){
             steps{
                 sshagent(credentials : ["deploy-key"]) {
