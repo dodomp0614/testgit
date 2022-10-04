@@ -37,8 +37,7 @@ pipeline {
             steps{
                 sshagent(credentials : ["deploy-key"]) {
                     sh """
-                    ssh -o StrictHostKeyChecking=no hyosung@10.2.0.5
-                    sudo docker run -d -p 8000:8000 $REPOSITORY:latest
+                    ssh -o StrictHostKeyChecking=no hyosung@10.2.0.5 'sudo docker run -d -p 8000:8000 $REPOSITORY:latest'
                     """
                 }
             }
