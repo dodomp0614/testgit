@@ -30,14 +30,14 @@ pipeline {
         }
         stage('Remove docker image') { 
 		  steps { 
-              sh "sudo docker rmi -f $REPOSITORY:latest" // docker image 제거
+              sh "docker rmi -f $REPOSITORY:latest" // docker image 제거
           }
         } 
         stage('Deploy with Azure VM'){
             steps{
                 sshagent(credentials : ["deploy-key"]) {
                     sh """
-                    sudo ssh -o StrictHostKeyChecking=no hyosung@20.200.209.165
+                    ssh -o StrictHostKeyChecking=no hyosung@20.200.209.165
                     sudo docker run -d -p 8000:8000 $REPOSITORY:latest
                     """
                 }
