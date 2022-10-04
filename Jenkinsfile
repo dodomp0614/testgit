@@ -16,7 +16,7 @@ pipeline {
         stage('Build Django project with dockerfile') {
             steps {
                 sh """
-                docker build . -t dlgytjd1997/pipetest
+                docker build . -t $REPOSITORY
                 """
             }
         }
@@ -24,7 +24,7 @@ pipeline {
             steps {
                 sh """ 
                 echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin 
-                docker push dlgytjd1997/pipetest:latest
+                docker push $REPOSITORY:latest
                 """
             }
         }
