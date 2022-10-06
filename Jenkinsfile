@@ -7,12 +7,7 @@ pipeline {
     }
     
 
-    stages {
-        stage('Pull Codes from Github'){
-            steps{
-                checkout scm
-            }
-        }
+    
         stage('Build Django project with dockerfile') {
             steps {
                 sh """
